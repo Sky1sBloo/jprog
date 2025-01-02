@@ -23,4 +23,12 @@ public class Token {
     public TokenTypes.Secondary getSecondaryType() {
         return secondaryType;
     }
+
+    public boolean isEqual(Token other) {
+        if (other.secondaryType == TokenTypes.Secondary.ANY || this.secondaryType == TokenTypes.Secondary.ANY) {
+            return this.primaryType == other.primaryType;
+        } else {
+            return this.primaryType == other.primaryType && this.secondaryType == other.secondaryType;
+        }
+    }
 }
