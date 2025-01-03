@@ -1,4 +1,4 @@
-package org.sky1sbloo.jprog.SyntaxTree;
+package org.sky1sbloo.jprog.syntaxtree;
 
 /**
  * Class containing all the parse nodes
