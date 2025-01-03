@@ -14,12 +14,11 @@ public class TokenTypes {
         IDENTIFIER(Primary.VALUE),
         OPERATOR(Primary.TERMINAL),
         BRACE(Primary.TERMINAL),
-        ASSIGN(Primary.TERMINAL),
         STATEMENT_TERMINATE(Primary.TERMINAL),;
 
         private final Primary primaryType;
 
-        private Secondary(Primary type) {
+        Secondary(Primary type) {
             this.primaryType = type;
         }
 
