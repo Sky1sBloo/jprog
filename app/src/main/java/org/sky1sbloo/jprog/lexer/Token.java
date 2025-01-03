@@ -1,6 +1,6 @@
-package org.sky1sbloo.jprog.Lexer;
+package org.sky1sbloo.jprog.lexer;
 
-import org.sky1sbloo.jprog.Lexer.TokenTypes.*;
+import org.sky1sbloo.jprog.lexer.TokenTypes.*;
 
 /**
  * Class representing a token.

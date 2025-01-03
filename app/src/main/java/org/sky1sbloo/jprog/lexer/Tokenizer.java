@@ -1,4 +1,4 @@
-package org.sky1sbloo.jprog.Lexer;
+package org.sky1sbloo.jprog.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
