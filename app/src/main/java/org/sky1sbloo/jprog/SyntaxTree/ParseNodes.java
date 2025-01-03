@@ -15,8 +15,5 @@ public class ParseNodes {
     }
 
     public record AssignmentExpr(ValueExpr identifier, ValueExpr value) implements TerminalExpr {
-        @Override
-        public void performAction() {
-        }
     }
 }
