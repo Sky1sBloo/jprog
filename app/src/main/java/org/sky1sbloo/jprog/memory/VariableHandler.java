@@ -86,6 +86,9 @@ public class VariableHandler {
      * NOTE: Call this rather than calling using program memory's allocateStackFrame
      */
     public void popStackFrame() {
-        variableStack.pop();
+        HashMap<String, Integer> stackFrame = variableStack.pop();
+        for (Integer address : stackFrame.values()) {
+            memory.deallocateMemoryCell(address);
+        }
     }
 }
