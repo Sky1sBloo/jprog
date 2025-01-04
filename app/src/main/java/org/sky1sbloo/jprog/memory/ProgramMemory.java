@@ -40,6 +40,13 @@ public class ProgramMemory {
     }
 
     /**
+     * Returns the number of stack frames
+     */
+    public int getStackFrameCount() {
+        return memoryStack.size();
+    }
+
+    /**
      * Allocates a new memory cell
      * @return The memory address of the cell
      */
