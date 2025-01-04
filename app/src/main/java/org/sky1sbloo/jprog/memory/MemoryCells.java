@@ -46,6 +46,17 @@ public class MemoryCells {
         throw new WrongTypeException("Cell is at unknown type");
     }
 
+
+    // Added separate visitor call for function definition
+    public static ParseNodes.FunctionDefinitionExpr visitFunctionDefinition(MemoryCell cell) throws WrongTypeException {
+        if (cell.value() instanceof MemoryCellTypes.FunctionDefinition(
+                ParseNodes.FunctionDefinitionExpr functionDefinitionExpr
+        )) {
+            return functionDefinitionExpr;
+        }
+        throw new WrongTypeException("Cell is not a function definition");
+    }
+
     public static boolean isEqual(MemoryCell cell1, MemoryCell cell2) throws WrongTypeException {
         Optional<Boolean> result = visit(cell1,
                 (Integer cell1Value) -> {
