@@ -4,6 +4,7 @@ import com.google.common.math.DoubleMath;
 
 import java.util.function.Function;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Utility class for memory cell
@@ -13,7 +14,8 @@ public class MemoryCells {
                               Function<Integer, R> intVisitor,
                               Function<Double, R> numberVisitor,
                               Function<Boolean, R> boolVisitor,
-                              Function<String, R> stringVisitor) throws WrongTypeException {
+                              Function<String, R> stringVisitor,
+                              Supplier<R> nullVisitor) throws WrongTypeException {
         if (cell.value() instanceof MemoryCellTypes.Int(int value)) {
             return intVisitor.apply(value);
         }
@@ -25,6 +27,9 @@ public class MemoryCells {
         }
         if (cell.value() instanceof MemoryCellTypes.StringType(String value)) {
             return stringVisitor.apply(value);
+        }
+        if (cell.value() instanceof MemoryCellTypes.Null) {
+            return nullVisitor.get();
         }
         throw new WrongTypeException("Cell is at unknown type");
     }
@@ -54,7 +59,8 @@ public class MemoryCells {
                         return cell1Value.equals(cell2Value);
                     }
                     return false;
-                });
+                },
+                () -> cell2.value() instanceof MemoryCellTypes.Null);
     }
 
     // Identifies datatype based on value
@@ -77,6 +83,11 @@ public class MemoryCells {
         Optional<String> stringValue = buildString(value);
         if (stringValue.isPresent()) {
             return new MemoryCell(new MemoryCellTypes.StringType(stringValue.get()));
+        }
+
+        Optional<String> nullValue = buildNull(value);
+        if (nullValue.isPresent()) {
+            return new MemoryCell(new MemoryCellTypes.Null());
         }
 
         throw new WrongTypeException("Value: " + value + " is of unknown type");
@@ -116,6 +127,13 @@ public class MemoryCells {
     private static Optional<String> buildString(String value) {
         if (value.startsWith("\"") && value.endsWith("\"")) {
             return Optional.of(value.substring(1, value.length() - 1));
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<String> buildNull(String value) {
+        if (value.equals("null")) {
+            return Optional.of(value);
         }
         return Optional.empty();
     }

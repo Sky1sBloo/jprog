@@ -4,7 +4,7 @@ public class MemoryCellTypes {
     /**
      * Holder for variant
      */
-    public sealed interface Cell permits Int, Number, Bool, StringType {
+    public sealed interface Cell permits Int, Number, Bool, StringType, Null {
     }
 
     public record Int(int value) implements Cell {
@@ -17,5 +17,8 @@ public class MemoryCellTypes {
     }
 
     public record StringType(String value) implements Cell {
+    }
+
+    public record Null() implements Cell {
     }
 }
