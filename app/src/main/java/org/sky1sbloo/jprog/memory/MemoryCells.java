@@ -1,6 +1,7 @@
 package org.sky1sbloo.jprog.memory;
 
 import com.google.common.math.DoubleMath;
+import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
 
 import java.util.function.Function;
 import java.util.Optional;
@@ -10,11 +11,15 @@ import java.util.function.Supplier;
  * Utility class for memory cell
  */
 public class MemoryCells {
+    /**
+     * Visits all primitive types
+     */
     public static <R> R visit(MemoryCell cell,
                               Function<Integer, R> intVisitor,
                               Function<Double, R> numberVisitor,
                               Function<Boolean, R> boolVisitor,
                               Function<String, R> stringVisitor,
+                              Function<ParseNodes.FunctionDefinitionExpr, R> functionVisitor,
                               Supplier<R> nullVisitor) throws WrongTypeException {
         if (cell.value() instanceof MemoryCellTypes.Int(int value)) {
             return intVisitor.apply(value);
@@ -31,36 +36,47 @@ public class MemoryCells {
         if (cell.value() instanceof MemoryCellTypes.Null) {
             return nullVisitor.get();
         }
+        if (cell.value() instanceof MemoryCellTypes.FunctionDefinition(
+                ParseNodes.FunctionDefinitionExpr functionDefinitionExpr
+        )) {
+            return functionVisitor.apply(functionDefinitionExpr);
+        }
         throw new WrongTypeException("Cell is at unknown type");
     }
 
     public static boolean isEqual(MemoryCell cell1, MemoryCell cell2) throws WrongTypeException {
-        return visit(cell1,
+        Optional<Boolean> result = visit(cell1,
                 (Integer cell1Value) -> {
                     if (cell2.value() instanceof MemoryCellTypes.Int(int cell2Value)) {
-                        return cell1Value == cell2Value;
+                        return Optional.of(cell1Value == cell2Value);
                     }
-                    return false;
+                    return Optional.empty();
                 },
                 (Double cell1Value) -> {
                     if (cell2.value() instanceof MemoryCellTypes.Number(Double cell2Value)) {
-                        return DoubleMath.fuzzyEquals(cell1Value, cell2Value, 0.000001d);
+                        return Optional.of(DoubleMath.fuzzyEquals(cell1Value, cell2Value, 0.000001d));
                     }
-                    return false;
+                    return Optional.empty();
                 },
                 (Boolean cell1Value) -> {
                     if (cell2.value() instanceof MemoryCellTypes.Bool(boolean cell2Value)) {
-                        return cell1Value == cell2Value;
+                        return Optional.of(cell1Value == cell2Value);
                     }
-                    return false;
+                    return Optional.empty();
                 },
                 (String cell1Value) -> {
                     if (cell2.value() instanceof MemoryCellTypes.StringType(String cell2Value)) {
-                        return cell1Value.equals(cell2Value);
+                        return Optional.of(cell1Value.equals(cell2Value));
                     }
-                    return false;
+                    return Optional.empty();
                 },
-                () -> cell2.value() instanceof MemoryCellTypes.Null);
+                (ParseNodes.FunctionDefinitionExpr expr) -> Optional.empty(),
+                () -> Optional.of(cell2.value() instanceof MemoryCellTypes.Null));
+
+        if (result.isEmpty()) {
+            throw new WrongTypeException("Equality check between different types or function definition");
+        }
+        return result.get();
     }
 
     // Identifies datatype based on value
