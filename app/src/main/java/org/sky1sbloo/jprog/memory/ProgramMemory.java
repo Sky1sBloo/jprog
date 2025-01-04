@@ -93,20 +93,4 @@ public class ProgramMemory {
         }
         memoryStack.peek().put(address, cell);
     }
-
-    /**
-     * Frees the memory cell at the given address
-     */
-    public void freeMemoryCell(int address) {
-        if (memoryStack.isEmpty() || unusedPtrs.isEmpty()) {
-            throw new IllegalStateException("Tried to deallocate on empty stack frame");
-        }
-        try {
-            memoryStack.peek().remove(address);
-        } catch (NoSuchElementException e) {
-            throw new IllegalStateException("Tried to deallocate an undefined cell");
-        }
-
-        unusedPtrs.peek().add(address);
-    }
 }
