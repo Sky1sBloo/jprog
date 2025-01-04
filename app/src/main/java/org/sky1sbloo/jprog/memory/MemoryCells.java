@@ -1,8 +1,10 @@
 package org.sky1sbloo.jprog.memory;
 
 import com.google.common.math.DoubleMath;
+import org.sky1sbloo.jprog.syntaxtree.ExprTypes;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -79,7 +81,10 @@ public class MemoryCells {
         return result.get();
     }
 
-    // Identifies datatype based on value
+    /**
+     * Identifies datatype based on value
+     * Note: Only works on primitives
+     */
     public static MemoryCell build(String value) throws WrongTypeException {
         Optional<Integer> intValue = buildInteger(value);
         if (intValue.isPresent()) {
@@ -107,6 +112,16 @@ public class MemoryCells {
         }
 
         throw new WrongTypeException("Value: " + value + " is of unknown type");
+    }
+
+    /**
+     * Builds a memory cell for function definition
+     */
+    public static MemoryCell buildFunction(String identifier, List<String> paramId, List<ExprTypes.Expr> body) {
+        return new MemoryCell(
+                new MemoryCellTypes.FunctionDefinition(
+                        new ParseNodes.FunctionDefinitionExpr(identifier, paramId, body))
+        );
     }
 
     // Functions for identifying type
