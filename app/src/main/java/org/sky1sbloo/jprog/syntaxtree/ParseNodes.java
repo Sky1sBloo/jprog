@@ -1,7 +1,5 @@
 package org.sky1sbloo.jprog.syntaxtree;
 
-import org.sky1sbloo.jprog.syntaxtree.ExprTypes.*;
-
 import java.util.List;
 
 /**
@@ -23,6 +21,6 @@ public class ParseNodes {
     public record FunctionCallExpr(ExprTypes.Value identifier, List<ExprTypes.Value> arguments) implements ExprTypes.Value {
     }
 
-    public record FunctionDefinitionExpr(ExprTypes.Value identifier, List<ExprTypes.Value> arguments, List<ExprTypes.Expr> body) implements ExprTypes.Terminal {
+    public record FunctionDefinitionExpr(String identifier, List<String> argumentId, List<ExprTypes.Expr> body) implements ExprTypes.Terminal {
     }
 }
