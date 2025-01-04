@@ -47,7 +47,6 @@ public class VariableHandler {
         if (variableStack.isEmpty()) {
             throw new IllegalStateException("Tried to allocate variable: " + identifier + " on an empty stack");
         }
-        HashMap<String, Integer> topStack = variableStack.peek();
 
         for (HashMap<String, Integer> stack : variableStack) {
             if (stack.containsKey(identifier)) {
