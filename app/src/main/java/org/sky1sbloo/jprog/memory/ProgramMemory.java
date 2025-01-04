@@ -11,9 +11,9 @@ public class ProgramMemory {
     private final Deque<Integer> nextPtr;  // Represents the ptr that will be allocated next based on the stack frame
 
     public ProgramMemory() {
-        this.memoryStack = new LinkedList<>();
-        this.nextPtr = new LinkedList<>();
-        this.unusedPtrs = new LinkedList<>();
+        this.memoryStack = new ArrayDeque<>();
+        this.nextPtr = new ArrayDeque<>();
+        this.unusedPtrs = new ArrayDeque<>();
         allocateStackFrame();
     }
 
