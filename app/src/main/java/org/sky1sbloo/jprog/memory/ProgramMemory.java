@@ -64,6 +64,19 @@ public class ProgramMemory {
         return address;
     }
 
+    public MemoryCell getMemoryCell(int address) {
+        if (memoryStack.isEmpty()) {
+            throw new IllegalStateException("Tried to allocate on empty stack frame");
+        }
+        for (HashMap<Integer, MemoryCell> frame : memoryStack) {
+            if (frame.containsKey(address)) {
+                return frame.get(address);
+            }
+
+        }
+        throw new IllegalStateException("Tried to access an undefined cell");
+    }
+
     /**
      * Sets the memory cell at the given address
      */
