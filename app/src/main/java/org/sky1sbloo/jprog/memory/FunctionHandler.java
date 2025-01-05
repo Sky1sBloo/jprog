@@ -1,6 +1,5 @@
 package org.sky1sbloo.jprog.memory;
 
-import org.sky1sbloo.jprog.syntaxtree.ExprTypes;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
 
 import java.util.HashMap;
@@ -18,7 +17,7 @@ public class FunctionHandler {
         this.functionMap = new HashMap<>();
     }
 
-    public void defineFunction(String identifier, List<String> paramId, List<ExprTypes.Expr> body) {
+    public void defineFunction(String identifier, List<String> paramId, List<ParseNodes.Expr> body) {
         if (functionMap.containsKey(identifier)) {
             throw new IllegalArgumentException("Tried to define existing function: " + identifier);
         }

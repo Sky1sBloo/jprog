@@ -2,7 +2,6 @@ package org.sky1sbloo.jprog.memory;
 
 import com.google.common.math.DoubleMath;
 import org.sky1sbloo.jprog.syntaxtree.BinaryOperators;
-import org.sky1sbloo.jprog.syntaxtree.ExprTypes;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
 
 import java.util.List;
@@ -58,11 +57,6 @@ public class MemoryCells {
         throw new WrongTypeException("Cell is not a function definition");
     }
 
-    /**
-     * Compares two memory cells
-     *
-     * @throws WrongTypeException if the memory cells are of different types or comparing a function definition
-     */
     public static boolean isEqual(MemoryCell cell1, MemoryCell cell2) throws WrongTypeException {
         Optional<Boolean> result = visit(cell1,
                 (Integer cell1Value) -> {
@@ -134,7 +128,7 @@ public class MemoryCells {
     /**
      * Builds a memory cell for function definition
      */
-    public static MemoryCell buildFunction(String identifier, List<String> paramId, List<ExprTypes.Expr> body) {
+    public static MemoryCell buildFunction(String identifier, List<String> paramId, List<ParseNodes.Expr> body) {
         return new MemoryCell(
                 new MemoryCellTypes.FunctionDefinition(
                         new ParseNodes.FunctionDefinitionExpr(identifier, paramId, body))
