@@ -36,10 +36,10 @@ public class ParseNodes {
     public record VariableInitializationExpr(String identifier) implements Terminal {
     }
 
-    public record AssignmentExpr(Value identifier, Value value) implements Terminal {
+    public record AssignmentExpr(String identifier, Value value) implements Terminal {
     }
 
-    public record FunctionCallExpr(Value identifier, List<Value> arguments) implements Value {
+    public record FunctionCallExpr(String identifier, List<Value> arguments) implements Value {
     }
 
     public record FunctionDefinitionExpr(String identifier, List<String> argumentId, List<Expr> body) implements Terminal {
