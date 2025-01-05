@@ -1,6 +1,7 @@
 package org.sky1sbloo.jprog.memory;
 
 import com.google.common.math.DoubleMath;
+import org.sky1sbloo.jprog.syntaxtree.BinaryOperators;
 import org.sky1sbloo.jprog.syntaxtree.ExprTypes;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
 
@@ -57,6 +58,11 @@ public class MemoryCells {
         throw new WrongTypeException("Cell is not a function definition");
     }
 
+    /**
+     * Compares two memory cells
+     *
+     * @throws WrongTypeException if the memory cells are of different types or comparing a function definition
+     */
     public static boolean isEqual(MemoryCell cell1, MemoryCell cell2) throws WrongTypeException {
         Optional<Boolean> result = visit(cell1,
                 (Integer cell1Value) -> {
@@ -178,5 +184,235 @@ public class MemoryCells {
             return Optional.of(value);
         }
         return Optional.empty();
+    }
+
+    /**
+     * Identifies and performs binary operation on memory cells
+     */
+    private static MemoryCell performBinaryOperation(MemoryCell left, MemoryCell right, BinaryOperators operation) throws WrongTypeException {
+        return switch (operation) {
+            case BinaryOperators.ADD -> addCells(left, right);
+            case BinaryOperators.SUBTRACT -> subtractCells(left, right);
+            case BinaryOperators.MULTIPLY -> multiplyCells(left, right);
+            case BinaryOperators.DIVIDE -> divideCells(left, right);
+            case BinaryOperators.MODULO -> moduloCells(left, right);
+            case BinaryOperators.EQUALS ->
+                    MemoryCells.build(String.valueOf(isEqual(left, right))); // Note ensure the value of true is "true" and false is "false"
+            case BinaryOperators.NOT_EQUALS -> MemoryCells.build(String.valueOf(!isEqual(left, right)));
+            case BinaryOperators.GREATER_THAN -> compareGreaterThanCells(left, right);
+            case BinaryOperators.LESS_THAN -> compareLessThanCells(left, right);
+            case BinaryOperators.GREATER_THAN_OR_EQUAL -> {
+                MemoryCell leftGreaterThanRight = compareGreaterThanCells(left, right);
+                MemoryCell isEqual = MemoryCells.build(String.valueOf(isEqual(left, right)));
+                if (MemoryCells.isEqual(isEqual, MemoryCells.build("true"))) {
+                    yield isEqual;
+                }
+                if (MemoryCells.isEqual(leftGreaterThanRight, MemoryCells.build("true"))) {
+                    yield leftGreaterThanRight;
+                }
+                yield isEqual;
+            }
+            case BinaryOperators.LESS_THAN_OR_EQUAL -> {
+                MemoryCell leftGreaterThanRight = compareLessThanCells(left, right);
+                MemoryCell isEqual = MemoryCells.build(String.valueOf(isEqual(left, right)));
+                if (MemoryCells.isEqual(isEqual, MemoryCells.build("true"))) {
+                    yield isEqual;
+                }
+                if (MemoryCells.isEqual(leftGreaterThanRight, MemoryCells.build("true"))) {
+                    yield leftGreaterThanRight;
+                }
+                yield isEqual;
+            }
+            case AND -> performAndOperationCells(left, right);
+            case OR -> performOrOperationCells(left, right);
+        };
+    }
+
+    /**
+     * Adds two memory cells
+     * Note: Only works on primitives and string
+     */
+    public static MemoryCell addCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue + rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue + rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue + rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue + rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.StringType(String leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.StringType(String rightValue)) {
+                return MemoryCells.build(leftValue + rightValue);
+            }
+        }
+        throw new WrongTypeException("Cannot perform addition on memory cells of invalid cell types");
+    }
+
+    /**
+     * Subtracts two memory cells
+     * Note: Only works on primitives
+     */
+    public static MemoryCell subtractCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue - rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue - rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue - rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue - rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform subtraction on memory cells of invalid cell types");
+    }
+
+
+    /**
+     * Multiplies two memory cells
+     * Note: Only works on primitives
+     */
+    public static MemoryCell multiplyCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue * rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue * rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue * rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue * rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform multiplication on memory cells of invalid cell types");
+    }
+
+    /**
+     * Divides two memory cells
+     * Note: Only works on primitives
+     */
+    public static MemoryCell divideCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue / rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue / rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue / rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue / rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform division on memory cells of invalid cell types");
+    }
+
+
+    /**
+     * Modulo two memory cells
+     * Note: Only works on primitives
+     */
+    public static MemoryCell moduloCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue % rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue % rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue % rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue % rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform modulo on memory cells of invalid cell types");
+    }
+
+    /**
+     * Compares if left memory cell is greater than right memory cell
+     */
+    public static MemoryCell compareGreaterThanCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot compare > memory cells of invalid cell types");
+    }
+
+    public static MemoryCell compareLessThanCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+        }
+        if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+            if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot compare < memory cells of invalid cell types");
+    }
+
+    public static MemoryCell performAndOperationCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Bool(boolean leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Bool(boolean rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue && rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform AND operation on non boolean memory cells");
+    }
+
+    public static MemoryCell performOrOperationCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
+        if (left.value() instanceof MemoryCellTypes.Bool(boolean leftValue)) {
+            if (right.value() instanceof MemoryCellTypes.Bool(boolean rightValue)) {
+                return MemoryCells.build(String.valueOf(leftValue || rightValue));
+            }
+        }
+        throw new WrongTypeException("Cannot perform OR operation on non boolean memory cells");
     }
 }
