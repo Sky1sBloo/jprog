@@ -33,6 +33,9 @@ public class ParseNodes {
     public record BinaryExpr(Value left, Value right, BinaryOperators operator) implements Value {
     }
 
+    public record VariableInitializationExpr(String identifier) implements Terminal {
+    }
+
     public record AssignmentExpr(Value identifier, Value value) implements Terminal {
     }
 

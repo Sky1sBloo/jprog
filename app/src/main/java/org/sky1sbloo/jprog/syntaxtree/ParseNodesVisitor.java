@@ -10,6 +10,7 @@ public class ParseNodesVisitor {
                                        Function<ParseNodes.LiteralExpr, R> literalExprFunction,
                                        Function<ParseNodes.IdentifierExpr, R> identifierExprFunction,
                                        Function<ParseNodes.BinaryExpr, R> binaryExprFunction,
+                                       Function<ParseNodes.VariableInitializationExpr, R> variableInitializationExprFunction,
                                        Function<ParseNodes.AssignmentExpr, R> assignmentExprFunction,
                                        Function<ParseNodes.FunctionCallExpr, R> functionCallExprFunction,
                                        Function<ParseNodes.FunctionDefinitionExpr, R> functionDefinitionExprFunction) {
@@ -21,6 +22,9 @@ public class ParseNodesVisitor {
         }
         if (expr instanceof ParseNodes.BinaryExpr binaryExpr) {
             return binaryExprFunction.apply(binaryExpr);
+        }
+        if (expr instanceof ParseNodes.VariableInitializationExpr variableInitializationExpr) {
+            return variableInitializationExprFunction.apply(variableInitializationExpr);
         }
         if (expr instanceof ParseNodes.AssignmentExpr assignmentExpr) {
             return assignmentExprFunction.apply(assignmentExpr);
