@@ -251,7 +251,7 @@ public class MemoryCells {
         }
         if (left.value() instanceof MemoryCellTypes.StringType(String leftValue)) {
             if (right.value() instanceof MemoryCellTypes.StringType(String rightValue)) {
-                return MemoryCells.build(leftValue + rightValue);
+                return MemoryCells.build("\"" + leftValue + rightValue + "\"");
             }
         }
         throw new WrongTypeException("Cannot perform addition on memory cells of invalid cell types");
