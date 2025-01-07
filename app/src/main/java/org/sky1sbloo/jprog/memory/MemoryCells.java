@@ -189,7 +189,7 @@ public class MemoryCells {
     /**
      * Identifies and performs binary operation on memory cells
      */
-    private static MemoryCell performBinaryOperation(MemoryCell left, MemoryCell right, BinaryOperators operation) throws WrongTypeException {
+    public static MemoryCell performBinaryOperation(MemoryCell left, MemoryCell right, BinaryOperators operation) throws WrongTypeException {
         return switch (operation) {
             case BinaryOperators.ADD -> addCells(left, right);
             case BinaryOperators.SUBTRACT -> subtractCells(left, right);
