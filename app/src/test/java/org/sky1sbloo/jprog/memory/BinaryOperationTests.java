@@ -38,4 +38,60 @@ public class BinaryOperationTests {
         Assertions.assertEquals(expectedResult, result);
         Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(left, wrongType, BinaryOperators.ADD));
     }
+
+    @Test
+    public void subtractionTest() throws WrongTypeException {
+        MemoryCell left = MemoryCells.build("5");
+        MemoryCell right = MemoryCells.build("3");
+        MemoryCell result = MemoryCells.performBinaryOperation(left, right, BinaryOperators.SUBTRACT);
+        MemoryCell expectedResult = new MemoryCell(new MemoryCellTypes.Int(2));
+
+        Assertions.assertEquals(expectedResult, result);
+
+        MemoryCell numberLeft = MemoryCells.build("5.5");
+        MemoryCell numberRight = MemoryCells.build("3.0");
+        MemoryCell numberResult = MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.SUBTRACT);
+        MemoryCell expectedFloatResult = new MemoryCell(new MemoryCellTypes.Number(2.5));
+
+        Assertions.assertEquals(expectedFloatResult, numberResult);
+        MemoryCell combinedResult = MemoryCells.performBinaryOperation(left, numberRight, BinaryOperators.SUBTRACT);
+        MemoryCell expectedCombinedResult = new MemoryCell(new MemoryCellTypes.Number(2.0));
+        Assertions.assertEquals(expectedCombinedResult, combinedResult);
+
+        MemoryCell boolType = MemoryCells.build("\"true\"");
+        MemoryCell boolType2 = MemoryCells.build("\"false\"");
+        MemoryCell nullType = MemoryCells.build("null");
+        MemoryCell stringType = MemoryCells.build("\"2\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, stringType, BinaryOperators.SUBTRACT));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(boolType, boolType2, BinaryOperators.SUBTRACT));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullType, nullType, BinaryOperators.SUBTRACT));
+    }
+
+    @Test
+    public void multiplicationTest() throws WrongTypeException {
+        MemoryCell left = MemoryCells.build("5");
+        MemoryCell right = MemoryCells.build("3");
+        MemoryCell result = MemoryCells.performBinaryOperation(left, right, BinaryOperators.MULTIPLY);
+        MemoryCell expectedResult = new MemoryCell(new MemoryCellTypes.Int(15));
+
+        Assertions.assertEquals(expectedResult, result);
+
+        MemoryCell numberLeft = MemoryCells.build("5.5");
+        MemoryCell numberRight = MemoryCells.build("3.0");
+        MemoryCell numberResult = MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.MULTIPLY);
+        MemoryCell expectedFloatResult = new MemoryCell(new MemoryCellTypes.Number(16.5));
+
+        Assertions.assertEquals(expectedFloatResult, numberResult);
+        MemoryCell combinedResult = MemoryCells.performBinaryOperation(left, numberRight, BinaryOperators.MULTIPLY);
+        MemoryCell expectedCombinedResult = new MemoryCell(new MemoryCellTypes.Number(15.0));
+        Assertions.assertEquals(expectedCombinedResult, combinedResult);
+
+        MemoryCell boolType = MemoryCells.build("\"true\"");
+        MemoryCell boolType2 = MemoryCells.build("\"false\"");
+        MemoryCell nullType = MemoryCells.build("null");
+        MemoryCell stringType = MemoryCells.build("\"2\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, stringType, BinaryOperators.MULTIPLY));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(boolType, boolType2, BinaryOperators.MULTIPLY));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullType, nullType, BinaryOperators.MULTIPLY));
+    }
 }
