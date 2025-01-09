@@ -119,4 +119,29 @@ public class BinaryOperationTests {
         Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(boolType, boolType2, BinaryOperators.DIVIDE));
         Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullType, nullType, BinaryOperators.DIVIDE));
     }
+
+    @Test
+    public void moduloTest() throws WrongTypeException {
+        MemoryCell left = MemoryCells.build("3");
+        MemoryCell right = MemoryCells.build("2");
+        MemoryCell result = MemoryCells.performBinaryOperation(left, right, BinaryOperators.MODULO);
+        MemoryCell expectedResult = new MemoryCell(new MemoryCellTypes.Int(1));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult, result));
+
+        MemoryCell numberLeft = MemoryCells.build("7.5");
+        MemoryCell numberRight = MemoryCells.build("2");
+        MemoryCell numberResult = MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.MODULO);
+        MemoryCell expectedFloatResult = new MemoryCell(new MemoryCellTypes.Number(1.5));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedFloatResult, numberResult));
+
+        MemoryCell boolType = MemoryCells.build("\"true\"");
+        MemoryCell boolType2 = MemoryCells.build("\"false\"");
+        MemoryCell nullType = MemoryCells.build("null");
+        MemoryCell stringType = MemoryCells.build("\"2\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, stringType, BinaryOperators.MODULO));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(boolType, boolType2, BinaryOperators.MODULO));
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullType, nullType, BinaryOperators.MODULO));
+    }
 }
