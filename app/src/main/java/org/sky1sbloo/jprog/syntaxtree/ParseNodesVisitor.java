@@ -1,5 +1,6 @@
 package org.sky1sbloo.jprog.syntaxtree;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -72,18 +73,18 @@ public class ParseNodesVisitor {
      *
      * @param expr Expression to be checked
      */
-    public static <R> R visitTerminal(ParseNodes.Terminal expr,
-                              Function<ParseNodes.VariableInitializationExpr, R> variableInitializationExprFunction,
-                              Function<ParseNodes.AssignmentExpr, R> assignmentExprFunction,
-                              Function<ParseNodes.FunctionDefinitionExpr, R> functionDefinitionExprFunction) {
+    public static void visitTerminal(ParseNodes.Terminal expr,
+                              Consumer<ParseNodes.VariableInitializationExpr> variableInitializationExprConsumer,
+                              Consumer<ParseNodes.AssignmentExpr> assignmentExprConsumer,
+                              Consumer<ParseNodes.FunctionDefinitionExpr> functionDefinitionExprConsumer) {
         if (expr instanceof ParseNodes.VariableInitializationExpr variableInitializationExpr) {
-            return variableInitializationExprFunction.apply(variableInitializationExpr);
+            variableInitializationExprConsumer.accept(variableInitializationExpr);
         }
         if (expr instanceof ParseNodes.AssignmentExpr assignmentExpr) {
-            return assignmentExprFunction.apply(assignmentExpr);
+            assignmentExprConsumer.accept(assignmentExpr);
         }
         if (expr instanceof ParseNodes.FunctionDefinitionExpr functionDefinitionExpr) {
-            return functionDefinitionExprFunction.apply(functionDefinitionExpr);
+            functionDefinitionExprConsumer.accept(functionDefinitionExpr);
         }
         throw new ParseNodesException("Expression is not a valid terminal parse node");
     }
