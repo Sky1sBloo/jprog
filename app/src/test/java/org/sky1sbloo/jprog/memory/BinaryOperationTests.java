@@ -228,4 +228,50 @@ public class BinaryOperationTests {
         MemoryCell stringType = MemoryCells.build("\"2\"");
         Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, nullType, BinaryOperators.NOT_EQUALS));
     }
+
+    @Test
+    public void greaterThanTests() throws WrongTypeException {
+        MemoryCell left = MemoryCells.build("6");
+        MemoryCell right = MemoryCells.build("4");
+        MemoryCell result = MemoryCells.performBinaryOperation(left, right, BinaryOperators.GREATER_THAN);
+        MemoryCell result2 = MemoryCells.performBinaryOperation(right, left, BinaryOperators.GREATER_THAN);
+        MemoryCell result3 = MemoryCells.performBinaryOperation(left, left, BinaryOperators.GREATER_THAN);
+        MemoryCell expectedResult = new MemoryCell(new MemoryCellTypes.Bool(true));
+        MemoryCell expectedResult2 = new MemoryCell(new MemoryCellTypes.Bool(false));
+        MemoryCell expectedResult3 = new MemoryCell(new MemoryCellTypes.Bool(false));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult, result));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult2, result2));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult3, result3));
+
+        MemoryCell numberLeft = MemoryCells.build("3.0");
+        MemoryCell numberRight = MemoryCells.build("3.01");
+        MemoryCell numberResult = MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.GREATER_THAN);
+        MemoryCell numberResult2 = MemoryCells.performBinaryOperation(numberRight, numberLeft, BinaryOperators.GREATER_THAN);
+        MemoryCell numberResult3 = MemoryCells.performBinaryOperation(numberLeft, numberLeft, BinaryOperators.GREATER_THAN);
+        MemoryCell expectedFloatResult = new MemoryCell(new MemoryCellTypes.Bool(false));
+        MemoryCell expectedFloatResult2 = new MemoryCell(new MemoryCellTypes.Bool(true));
+        MemoryCell expectedFloatResult3 = new MemoryCell(new MemoryCellTypes.Bool(false));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedFloatResult, numberResult));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedFloatResult2, numberResult2));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedFloatResult3, numberResult3));
+
+        MemoryCell boolLeft = MemoryCells.build("false");
+        MemoryCell boolRight = MemoryCells.build("false");
+
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(boolLeft, boolRight, BinaryOperators.GREATER_THAN));
+
+        MemoryCell stringLeft = MemoryCells.build("\"Hello\"");
+        MemoryCell stringRight = MemoryCells.build("\"Hello\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringLeft, stringRight, BinaryOperators.GREATER_THAN));
+
+        MemoryCell nullLeft = MemoryCells.build("null");
+        MemoryCell nullRight = MemoryCells.build("null");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullLeft, nullRight, BinaryOperators.GREATER_THAN));
+
+        MemoryCell nullType = MemoryCells.build("null");
+        MemoryCell stringType = MemoryCells.build("\"2\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, nullType, BinaryOperators.GREATER_THAN));
+    }
 }
