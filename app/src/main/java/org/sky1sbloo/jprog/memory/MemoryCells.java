@@ -381,18 +381,18 @@ public class MemoryCells {
     public static MemoryCell compareLessThanCells(MemoryCell left, MemoryCell right) throws WrongTypeException {
         if (left.value() instanceof MemoryCellTypes.Int(int leftValue)) {
             if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
-                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+                return MemoryCells.build(String.valueOf(leftValue < rightValue));
             }
             if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
-                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+                return MemoryCells.build(String.valueOf(leftValue < rightValue));
             }
         }
         if (left.value() instanceof MemoryCellTypes.Number(Double leftValue)) {
             if (right.value() instanceof MemoryCellTypes.Int(int rightValue)) {
-                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+                return MemoryCells.build(String.valueOf(leftValue < rightValue));
             }
             if (right.value() instanceof MemoryCellTypes.Number(Double rightValue)) {
-                return MemoryCells.build(String.valueOf(leftValue > rightValue));
+                return MemoryCells.build(String.valueOf(leftValue < rightValue));
             }
         }
         throw new WrongTypeException("Cannot compare < memory cells of invalid cell types");
