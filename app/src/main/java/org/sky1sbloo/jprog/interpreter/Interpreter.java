@@ -41,8 +41,12 @@ public class Interpreter {
                 },
                 (identifierExpr) -> variableHandler.getVariable(identifierExpr.value()),
                 (binaryExpr) -> {
-                    //  Todo: add implementation
-                    return null;
+                    try {
+                        return MemoryCells.performBinaryOperation(visitValueExpr(binaryExpr.left()),
+                                visitValueExpr(binaryExpr.right()), binaryExpr.operator());
+                    } catch (WrongTypeException e) {
+                        throw new RuntimeException(e);
+                    }
                 },
                 (functionCallExpr) -> {
                     // Todo: add implementation
