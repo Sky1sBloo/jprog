@@ -412,4 +412,71 @@ public class BinaryOperationTests {
         MemoryCell stringType = MemoryCells.build("\"2\"");
         Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringType, nullType, BinaryOperators.LESS_THAN_OR_EQUAL));
     }
+
+    @Test
+    public void andTests() throws WrongTypeException {
+        MemoryCell trueCell = MemoryCells.build("true");
+        MemoryCell falseCell = MemoryCells.build("false");
+        MemoryCell result = MemoryCells.performBinaryOperation(trueCell, trueCell, BinaryOperators.AND);
+        MemoryCell result2 = MemoryCells.performBinaryOperation(trueCell, falseCell, BinaryOperators.AND);
+        MemoryCell result3 = MemoryCells.performBinaryOperation(falseCell, trueCell, BinaryOperators.AND);
+        MemoryCell result4 = MemoryCells.performBinaryOperation(falseCell, falseCell, BinaryOperators.AND);
+        MemoryCell expectedResult = new MemoryCell(new MemoryCellTypes.Bool(true));
+        MemoryCell expectedResult2 = new MemoryCell(new MemoryCellTypes.Bool(false));
+        MemoryCell expectedResult3 = new MemoryCell(new MemoryCellTypes.Bool(false));
+        MemoryCell expectedResult4 = new MemoryCell(new MemoryCellTypes.Bool(false));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult, result));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult2, result2));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult3, result3));
+        Assertions.assertTrue(MemoryCells.isEqual(expectedResult4, result4));
+
+        MemoryCell numberLeft = MemoryCells.build("3.0");
+        MemoryCell numberRight = MemoryCells.build("3.01");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.AND));
+
+        MemoryCell boolLeft = MemoryCells.build("false");
+        MemoryCell boolRight = MemoryCells.build("false");
+        MemoryCell boolResult = MemoryCells.performBinaryOperation(boolLeft, boolRight, BinaryOperators.AND);
+        MemoryCell expectedBoolResult = new MemoryCell(new MemoryCellTypes.Bool(false));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedBoolResult, boolResult));
+
+        MemoryCell stringLeft = MemoryCells.build("\"Hello\"");
+        MemoryCell stringRight = MemoryCells.build("\"Hello\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringLeft, stringRight, BinaryOperators.AND));
+
+        MemoryCell nullLeft = MemoryCells.build("null");
+        MemoryCell nullRight = MemoryCells.build("null");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullLeft, nullRight, BinaryOperators.AND));
+    }
+
+    @Test
+    public void orTests() throws WrongTypeException {
+        MemoryCell trueCell  = MemoryCells.build("true");
+        MemoryCell falseCell = MemoryCells.build("false");
+
+        Assertions.assertTrue(MemoryCells.isEqual(trueCell, MemoryCells.performBinaryOperation(trueCell, trueCell, BinaryOperators.OR)));
+        Assertions.assertTrue(MemoryCells.isEqual(trueCell, MemoryCells.performBinaryOperation(trueCell, falseCell, BinaryOperators.OR)));
+        Assertions.assertTrue(MemoryCells.isEqual(falseCell, MemoryCells.performBinaryOperation(falseCell, falseCell, BinaryOperators.OR)));
+
+        MemoryCell numberLeft = MemoryCells.build("3.0");
+        MemoryCell numberRight = MemoryCells.build("3.01");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(numberLeft, numberRight, BinaryOperators.AND));
+
+        MemoryCell boolLeft = MemoryCells.build("false");
+        MemoryCell boolRight = MemoryCells.build("false");
+        MemoryCell boolResult = MemoryCells.performBinaryOperation(boolLeft, boolRight, BinaryOperators.AND);
+        MemoryCell expectedBoolResult = new MemoryCell(new MemoryCellTypes.Bool(false));
+
+        Assertions.assertTrue(MemoryCells.isEqual(expectedBoolResult, boolResult));
+
+        MemoryCell stringLeft = MemoryCells.build("\"Hello\"");
+        MemoryCell stringRight = MemoryCells.build("\"Hello\"");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(stringLeft, stringRight, BinaryOperators.AND));
+
+        MemoryCell nullLeft = MemoryCells.build("null");
+        MemoryCell nullRight = MemoryCells.build("null");
+        Assertions.assertThrows(WrongTypeException.class, () -> MemoryCells.performBinaryOperation(nullLeft, nullRight, BinaryOperators.AND));
+    }
 }
