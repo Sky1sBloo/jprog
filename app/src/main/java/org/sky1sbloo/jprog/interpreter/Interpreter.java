@@ -2,7 +2,6 @@ package org.sky1sbloo.jprog.interpreter;
 
 import org.sky1sbloo.jprog.memory.*;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodes;
-import org.sky1sbloo.jprog.syntaxtree.ParseNodesException;
 import org.sky1sbloo.jprog.syntaxtree.ParseNodesVisitor;
 
 /**
@@ -30,7 +29,7 @@ public class Interpreter {
         }
     }
 
-    MemoryCell visitValueExpr(ParseNodes.Value expr) throws RuntimeException {
+    private MemoryCell visitValueExpr(ParseNodes.Value expr) throws RuntimeException {
         return ParseNodesVisitor.visitValue(expr,
                 (literalExpr) -> {
                     try {
@@ -51,6 +50,15 @@ public class Interpreter {
                 (functionCallExpr) -> {
                     // Todo: add implementation
                     return null;
+                });
+    }
+
+    private void visitTerminalExpr(ParseNodes.Terminal expr) {
+        ParseNodesVisitor.visitTerminal(expr,
+                this::performVariableInitialization,
+                this::performVariableAssignment,
+                (functionDefinitionExpr) -> {
+                    throw new InterpreterException("Cannot interpret a terminal expression as a value expression");
                 });
     }
 }
