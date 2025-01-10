@@ -189,7 +189,7 @@ public class MemoryCells {
     /**
      * Identifies and performs binary operation on memory cells
      */
-    private static MemoryCell performBinaryOperation(MemoryCell left, MemoryCell right, BinaryOperators operation) throws WrongTypeException {
+    public static MemoryCell performBinaryOperation(MemoryCell left, MemoryCell right, BinaryOperators operation) throws WrongTypeException {
         return switch (operation) {
             case BinaryOperators.ADD -> addCells(left, right);
             case BinaryOperators.SUBTRACT -> subtractCells(left, right);
@@ -251,7 +251,7 @@ public class MemoryCells {
         }
         if (left.value() instanceof MemoryCellTypes.StringType(String leftValue)) {
             if (right.value() instanceof MemoryCellTypes.StringType(String rightValue)) {
-                return MemoryCells.build(leftValue + rightValue);
+                return MemoryCells.build("\"" + leftValue + rightValue + "\"");
             }
         }
         throw new WrongTypeException("Cannot perform addition on memory cells of invalid cell types");
